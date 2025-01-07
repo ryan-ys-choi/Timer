@@ -9,10 +9,10 @@ def start_timer():
             seconds = x % 60
             minutes = int(x / 60) % 60
             hours = int(x / 3600)
-            print(f'{hours:02}:{minutes:02}:{seconds:02}')
+            time_str.set(f'{hours:02}:{minutes:02}:{seconds:02}')
             main.update() # a method to process all pending events in the Tkinter event queue and updates the display accordingly
             time.sleep(1)
-        time_str.set("00:00:00")
+        time_str.set("00:00:00") # Set to 00:00:00 when done
         messagebox.showinfo("Notification", "Time's Up!")
     except ValueError:
         messagebox.showerror("Invalid Input", "Please enter a valid number ")
