@@ -1,6 +1,18 @@
 import time
 import tkinter as tk
 from tkinter import messagebox
+import pygame
+
+# Initialize pygame mixer
+pygame.mixer.init()
+
+def play_sound():
+    """Plays the alarm sound."""
+    try:
+        pygame.mixer.music.load("/Users/RyanYunseokChoi/Documents/Coding/Timer/alarm.mp3")  # Load the alarm sound
+        pygame.mixer.music.play()  # Play the sound
+    except pygame.error as e:
+        messagebox.showerror("Error", f"Sound playback failed: {e}")
 
 def start_timer():
     global timer_running
@@ -18,7 +30,9 @@ def start_timer():
             time.sleep(1)
         if timer_running:
             time_str.set("00:00:00") # Set to 00:00:00 when done
+            play_sound() # Play the sound
             messagebox.showinfo("Notification", "Time's Up!")
+            
     except ValueError:
         messagebox.showerror("Invalid Input", "Please enter a valid number ")
 
