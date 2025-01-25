@@ -15,13 +15,18 @@ def play_sound():
         messagebox.showerror("Error", f"Sound playback failed: {e}")
 
 def start_timer():
-    global timer_running
+    global timer_running, timer_paused
     timer_running = True
+    timer_paused = False
     try:
         my_time = int(entry.get())
         for x in range(my_time * 60, 0, -1):
             if not timer_running:
                 break
+            if timer_paused:
+                main.update()
+                time.sleep(0.1)
+                continue
             seconds = x % 60
             minutes = int(x / 60) % 60
             hours = int(x / 3600)
@@ -41,7 +46,11 @@ def stop_timer():
     timer_running = False
     time_str.set("00:25:00")
 
-print("Time's Up!")
+def hold_timer():
+    global timer_paused
+    if timer_running:
+        timer_paused = not timer_paused
+        hold_button.config(text="Resume Timer" if timer_paused else "Hold Timer")
 
 # Create the main window (Create an instance of the Tk class)
 main = tk.Tk()
@@ -72,6 +81,10 @@ start_button.pack(pady=10)
 
 stop_button = tk.Button(main, text="Stop Timer", command=stop_timer, font=("Helvetica", 14))
 stop_button.pack(pady=1)
+
+# Create the button to hold fuction
+hold_button = tk.Button(main, text="Hold Timer", command=hold_timer, font=("Helvetica", 14))
+hold_button.pack(pady=10)
 
 # run the applications
 main.mainloop()
