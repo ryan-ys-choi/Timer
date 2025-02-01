@@ -23,10 +23,10 @@ def start_timer():
         for x in range(my_time * 60, 0, -1):
             if not timer_running:
                 break
-            if timer_paused:
+            while timer_paused:
                 main.update()
                 time.sleep(0.1)
-                continue
+
             seconds = x % 60
             minutes = int(x / 60) % 60
             hours = int(x / 3600)
@@ -52,6 +52,12 @@ def hold_timer():
         timer_paused = not timer_paused
         hold_button.config(text="Resume Timer" if timer_paused else "Hold Timer")
 
+# Update button setup with click effects
+def button_click_effect(button):
+    original_color = button.cget("bg")
+    button.config(bg="yellow")
+    button.after(200, lambda: button.config(bg=original_color))
+
 # Create the main window (Create an instance of the Tk class)
 main = tk.Tk()
 main.title("Countdown TImer")
@@ -76,14 +82,14 @@ time_display = tk.Label(main, textvariable=time_str, font=("Helvetica", 24), bg=
 time_display.pack(pady=20)
 
 # Create the button to run 'start_timer' function
-start_button = tk.Button(main, text="Start Timer", command=start_timer, font=("Helvetica", 14))
+start_button = tk.Button(main, text="Start Timer", command=lambda: [button_click_effect(start_button), start_timer()], font=("Helvetica", 14))
 start_button.pack(pady=10)
 
-stop_button = tk.Button(main, text="Stop Timer", command=stop_timer, font=("Helvetica", 14))
+stop_button = tk.Button(main, text="Stop Timer", command=lambda: [button_click_effect(stop_button), stop_timer()], font=("Helvetica", 14))
 stop_button.pack(pady=1)
 
 # Create the button to hold fuction
-hold_button = tk.Button(main, text="Hold Timer", command=hold_timer, font=("Helvetica", 14))
+hold_button = tk.Button(main, text="Hold Timer", command=lambda: [button_click_effect(hold_button), hold_timer()], font=("Helvetica", 14))
 hold_button.pack(pady=10)
 
 # run the applications
