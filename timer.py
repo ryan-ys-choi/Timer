@@ -14,32 +14,38 @@ def play_sound():
     except pygame.error as e:
         messagebox.showerror("Error", f"Sound playback failed: {e}")
 
+def update_timer(x):
+    global timer_running, timer_paused
+    
+    if not timer_running:
+        return  # Stop execution when "Stop Timer" is clicked
+    
+    while timer_paused:
+        main.update()
+        time.sleep(0.1)  
+
+    seconds = x % 60
+    minutes = (x // 60) % 60
+    hours = x // 3600
+    time_str.set(f'{hours:02}:{minutes:02}:{seconds:02}')
+    
+    if x > 0:
+        main.after(1000, update_timer, x - 1)  # Schedule next update after 1 second
+    else:
+        time_str.set("00:00:00")  # Set to 00:00:00 when done
+        play_sound()  # Play the sound
+        messagebox.showinfo("Notification", "Time's Up!")
+
 def start_timer():
     global timer_running, timer_paused
     timer_running = True
     timer_paused = False
+    
     try:
-        my_time = int(entry.get())
-        for x in range(my_time * 60, 0, -1):
-            if not timer_running:
-                break
-            while timer_paused:
-                main.update()
-                time.sleep(0.1)
-
-            seconds = x % 60
-            minutes = int(x / 60) % 60
-            hours = int(x / 3600)
-            time_str.set(f'{hours:02}:{minutes:02}:{seconds:02}')
-            main.update() # a method to process all pending events in the Tkinter event queue and updates the display accordingly
-            time.sleep(1)
-        if timer_running:
-            time_str.set("00:00:00") # Set to 00:00:00 when done
-            play_sound() # Play the sound
-            messagebox.showinfo("Notification", "Time's Up!")
-            
+        my_time = int(entry.get()) * 60  # Convert minutes to seconds
+        update_timer(my_time)  # Start countdown
     except ValueError:
-        messagebox.showerror("Invalid Input", "Please enter a valid number ")
+        messagebox.showerror("Invalid Input", "Please enter a valid number")
 
 def stop_timer():
     global timer_running
